@@ -99,9 +99,10 @@ class _ArticlePageState extends State<ArticlePage> {
     print("[webView/_fetchArticle] fetched ${response.statusCode}");
     if (response.statusCode == 200) {
       var document = parse(response.body);
-      setState(() {
-        content = widget.article.getContent(document);
-      });
+      if (content == "")
+        setState(() {
+          content = widget.article.getContent(document);
+        });
     } else {
       throw Exception();
     }
