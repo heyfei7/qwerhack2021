@@ -8,7 +8,7 @@ class LangModel {
     List<Map<String, dynamic>> langList = await db.query("lang_table");
     if (langList.length == 0) return Map<String, dynamic>();
 
-    return langList[0];
+    return langList.last;
   }
 
   static Future<void> insertLangList(Map<String, String> langList) async {

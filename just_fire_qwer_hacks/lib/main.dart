@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:just_fire_qwer_hacks/languageHotSwap.dart';
 import 'package:just_fire_qwer_hacks/localization.dart';
 import 'package:just_fire_qwer_hacks/pickLang.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
+        "/hslang": (context) => HotswapLang(),
       },
     );
   }
@@ -51,16 +53,33 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.language),
               alignment: Alignment.centerLeft,
               onPressed: () {
-                Navigator.pushNamed(context, "/lang");
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Pick Your Top Languages'),
+                        content: Text(
+                            'Pick every language you wish to be able to view the articles in.'),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text('Ok'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.pushNamed(context, "/lang");
+                            },
+                          ),
+                        ],
+                      );
+                    });
               }),
+          HotswapLangButton(),
         ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            LanguageDropdown(),
-          ],
+          children: <Widget>[],
         ),
       ),
       floatingActionButton: FloatingActionButton(

@@ -108,6 +108,7 @@ class _PickLangPageState extends State<PickLangPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Pick Languages"),
+        leading: Container(),
       ),
       body: GridView.count(
         primary: false,
@@ -118,13 +119,38 @@ class _PickLangPageState extends State<PickLangPage> {
         children: widget.langs,
       ),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.check),
         onPressed: () async {
-          Map<String, String> langList = {};
+          Map<String, String> langMap = {};
 
+          bool allFalse = true;
           widget.langs.forEach((element) {
-            langList[element.langAbbrev] = element.selected.toString();
+            langMap[element.langAbbrev] = element.selected.toString();
+            if (allFalse) allFalse = !element.selected;
           });
-          await LangModel.insertLangList(langList);
+
+          if (allFalse) {
+            showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Please Pick at least One Language'),
+                    content: Text(""),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Ok'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+            return;
+          }
+
+          await LangModel.insertLangList(langMap);
           setState(() {});
           Navigator.pop(context);
         },
