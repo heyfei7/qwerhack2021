@@ -4,6 +4,11 @@ import 'package:just_fire_qwer_hacks/langModel.dart';
 import 'package:just_fire_qwer_hacks/localization.dart';
 
 class HotswapLangButton extends StatelessWidget {
+  String content;
+  HotswapLangButton(String c) {
+    content = c;
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -53,7 +58,7 @@ class _HotswapLangState extends State<HotswapLang> {
         langList.add(
           FlatButton(
             onPressed: () {
-              LanguageManager.currentLang = key;
+              LanguageManager.nLang = key;
               Navigator.pop(context);
             },
             child: Text(abrevs[key]),

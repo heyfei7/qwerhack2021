@@ -10,6 +10,7 @@ Future<String> _translateText({String input, String from, String to}) async {
 
 class LanguageManager {
   static String currentLang = "en";
+  static String nLang = "en";
 
   static Future<String> changeActiveLanguage(
       String textBlock, String newLangAbbrev) async {

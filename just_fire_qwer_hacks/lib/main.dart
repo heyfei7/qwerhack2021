@@ -69,15 +69,7 @@ class _HomePageState extends State<HomePage> {
 
   searchResultsList() {
     setState(() {
-      _resultsList = buildList();
-    });
-  }
-
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+      _resultsList = buildList(context);
     });
   }
 
@@ -110,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     });
               }),
-          HotswapLangButton(),
+          HotswapLangButton("notyetimplemented"),
           IconButton(
               icon: Icon(Icons.favorite),
               onPressed: () {
@@ -121,22 +113,28 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_forward),
-              onPressed: () {
-                Navigator.pushNamed(context, "/article");
-              },
-            ),
             TextField(
               controller: _searchController,
               decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
               //decoration: InputDecoration(hintText: 'Search...'),
             ),
-            Container(height: 600.0, child: ListView(children: buildList())),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return buildList(context)[index];
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void filterSearchResults(String query) {
+    List<String> dummyList = [];
   }
 }
 

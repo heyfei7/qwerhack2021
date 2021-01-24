@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-List<Widget> buildList() {
+List<Widget> buildList(BuildContext context) {
   return [
-    Card(
+    FlatButton(
+      onPressed: () {},
       child: Padding(
         padding: const EdgeInsets.only(
             top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
@@ -20,7 +21,10 @@ List<Widget> buildList() {
         ),
       ),
     ),
-    Card(
+    FlatButton(
+      onPressed: () {
+        Navigator.pushNamed(context, "/article");
+      },
       child: Padding(
         padding: const EdgeInsets.only(
             top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
