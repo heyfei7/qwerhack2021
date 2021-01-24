@@ -49,7 +49,7 @@ class _LangState extends State<Lang> {
   }
 }
 
-class PickLangPage extends StatelessWidget {
+class PickLangPage extends StatefulWidget {
   //Will change as more languages get added
   final List<Lang> langs = [
     Lang(
@@ -99,6 +99,10 @@ class PickLangPage extends StatelessWidget {
     ),
   ];
 
+  _PickLangPageState createState() => _PickLangPageState();
+}
+
+class _PickLangPageState extends State<PickLangPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,16 +115,18 @@ class PickLangPage extends StatelessWidget {
         mainAxisSpacing: 0.0,
         crossAxisSpacing: 0.0,
         crossAxisCount: 1,
-        children: langs,
+        children: widget.langs,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           Map<String, String> langList = {};
 
-          langs.forEach((element) {
+          widget.langs.forEach((element) {
             langList[element.langAbbrev] = element.selected.toString();
           });
           await LangModel.insertLangList(langList);
+          setState(() {});
+          Navigator.pop(context);
         },
       ),
     );

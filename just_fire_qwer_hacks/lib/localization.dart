@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:just_fire_qwer_hacks/dbUtils.dart';
 import 'package:just_fire_qwer_hacks/langModel.dart';
 import 'package:translator/translator.dart';
 import "pickLang.dart";
@@ -29,15 +30,17 @@ class LanguageDropdown extends StatefulWidget {
 }
 
 class _LanguageDropdownState extends State<LanguageDropdown> {
-  List<DropdownMenuItem<Text>> langList = [];
+  List<DropdownMenuItem<String>> langList = [];
+
+  String v = "English";
 
   @override
   Widget build(BuildContext context) {
-    buildItems();
-    return DropdownButton(items: langList, onChanged: null);
+    return IconButton();
   }
 
   Future<void> buildItems() async {
+    if (!await DBUtils.getDBExists()) return;
     langList.clear();
     final langMap = await LangModel.getLangList();
 
@@ -50,12 +53,14 @@ class _LanguageDropdownState extends State<LanguageDropdown> {
     };
 
     langMap.forEach((key, value) {
+      print("LANG MAP");
       if (value == "true")
-        langList.add(DropdownMenuItem<Text>(
+        langList.add(DropdownMenuItem<String>(
           child: Text(abrevs[key]),
           onTap: () async {
             LanguageManager._currentLang = key;
           },
+          value: abrevs[key],
         ));
     });
   }
