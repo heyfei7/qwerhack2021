@@ -10,6 +10,11 @@ We hope the translation services will bridge language gaps within the LGBTQ+ com
 
 Education is the key to understanding and acceptable, but it must be accessible to everyone.
 
+## Technology
+- Built the mobile app on Flutter and Dart
+- Translation done with [`translator`](https://pub.dev/packages/translator)
+- Querying and parsing HTML documents from URLs using [`http`](https://pub.dev/packages/http) and [`html`](https://pub.dev/packages/http)
+
 ## Current Features
 - Users can pick which language they want translations for
 - Users can filter and search from database of resources by tags
