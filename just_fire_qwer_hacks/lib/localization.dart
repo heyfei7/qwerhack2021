@@ -50,7 +50,7 @@ class _LanguageDropdownState extends State<LanguageDropdown> {
     };
 
     langMap.forEach((key, value) {
-      if (value)
+      if (value == "true")
         langList.add(DropdownMenuItem<Text>(
           child: Text(abrevs[key]),
           onTap: () async {
