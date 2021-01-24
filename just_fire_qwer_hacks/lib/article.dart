@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:just_fire_qwer_hacks/languageHotSwap.dart';
+import 'package:just_fire_qwer_hacks/localization.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Article {
@@ -59,24 +61,11 @@ class _ArticlePageState extends State<ArticlePage> {
             }
             return Scaffold(
               appBar: AppBar(
-                // Here we take the value from the MyHomePage object that was created by
-                // the App.build method, and use it to set our appbar title.
                 title: Text(widget.article.title),
+                actions: [
+                  HotswapLangButton(content),
+                ],
               ),
-              body: Center(
-                child: Container(
-                  child: WebView(
-                    initialUrl: 'about:blank',
-                    onWebViewCreated: (WebViewController webViewController) {
-                      _controller = webViewController;
-                    },
-                  ),
-                ),
-              ),
-            );
-          } else
-            return Scaffold(
-              appBar: AppBar(title: Text(widget.article.title)),
               body: ListView(
                 children: [
                   Padding(
@@ -89,6 +78,14 @@ class _ArticlePageState extends State<ArticlePage> {
                 ],
               ),
             );
+          } else
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.article.title),
+                ),
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ));
         },
         future: _fetchArticle());
   }
@@ -102,6 +99,7 @@ class _ArticlePageState extends State<ArticlePage> {
       if (content == "")
         setState(() {
           content = widget.article.getContent(document);
+          LanguageManager.changeActiveLanguage(content, LanguageManager.nLang);
         });
     } else {
       throw Exception();
