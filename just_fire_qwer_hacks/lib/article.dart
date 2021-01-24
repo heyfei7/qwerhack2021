@@ -13,7 +13,7 @@ const articles = [
   {
     "title": "BOOP",
     "url":
-        "https://bi.org/en/articles/what-my-parents-think-about-my-bisexuality"
+        "https://bi.org/en/articles/what-my-parents-think-about-my-bisexuality",
   },
   {
     "title": "[GUEST POST] WHEN YOUR CHILD COMES OUT AS BISEXUAL",
@@ -81,13 +81,9 @@ class _ArticlePageState extends State<ArticlePage> {
       ),
       body: Center(
         child: Container(
-          width: double.infinity,
-          height: max(MediaQuery.of(context).size.height, contentHeight),
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-              Text("HELLO WORLD World"),
-              Text("HELLO WORLD World"),
               WebView(
                 initialUrl: 'about:blank',
                 onWebViewCreated: (WebViewController webViewController) {
@@ -109,16 +105,13 @@ class _ArticlePageState extends State<ArticlePage> {
         document = parse(response.body);
         loaded = true;
       });
-      print("loaded!");
     } else {
-      print("not loaded!");
       throw Exception();
     }
   }
 
   void _loadHtmlFromAssets() async {
-    var text = this.document.getElementsByTagName('p')[0].text;
-    print("_loadHtmlFromAssets ${text}");
+    var text = this.document.getElementById("article").text;
     _controller.loadUrl(Uri.dataFromString(text,
             mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
         .toString());
