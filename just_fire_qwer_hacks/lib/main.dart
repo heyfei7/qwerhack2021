@@ -22,11 +22,8 @@ class MyApp extends StatelessWidget {
       home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
-
         "/hslang": (context) => HotswapLang(),
-
         "/article": (context) => ArticlePage(articles[0])
-
       },
     );
   }
@@ -86,7 +83,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            LanguageDropdown(),
             IconButton(
               icon: Icon(Icons.arrow_forward),
               onPressed: () {
