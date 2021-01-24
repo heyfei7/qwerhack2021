@@ -36,6 +36,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController _searchController = TextEditingController();
+
+  List<Widget> _resultsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  _onSearchChanged() {
+    print(_searchController.text);
+  }
+
+  searchResultsList() {
+    setState(() {
+      _resultsList = buildList();
+    });
+  }
+
   int _counter = 0;
 
   void _incrementCounter() {
@@ -65,7 +92,16 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Center(
-        child: ListView(children: buildList()),
+        child: Column(
+          children: <Widget>[
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+              //decoration: InputDecoration(hintText: 'Search...'),
+            ),
+            Container(height: 600.0, child: ListView(children: buildList()))
+          ],
+        ),
       ),
     );
   }
