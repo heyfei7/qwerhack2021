@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
         "/hslang": (context) => HotswapLang(),
         "/article": (context) => ArticlePage(articles[0])
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

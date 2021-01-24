@@ -46,35 +46,54 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('[webView/build] ${widget.article.url}');
-    if (content == null) {
-      _fetchArticle();
-    } else if (_controller != null) {
-      _controller.loadUrl(Uri.dataFromString(content,
-              mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-          .toString());
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.article.title),
-      ),
-      body: Center(
-        child: Container(
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController webViewController) {
-              _controller = webViewController;
-            },
-          ),
-        ),
-      ),
-    );
+    return FutureBuilder(
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            print('[webView/build] ${widget.article.url}');
+            if (content == "") {
+            } else if (_controller != null) {
+              _controller.loadUrl(Uri.dataFromString(content,
+                      mimeType: 'text/html',
+                      encoding: Encoding.getByName('utf-8'))
+                  .toString());
+            }
+            return Scaffold(
+              appBar: AppBar(
+                // Here we take the value from the MyHomePage object that was created by
+                // the App.build method, and use it to set our appbar title.
+                title: Text(widget.article.title),
+              ),
+              body: Center(
+                child: Container(
+                  child: WebView(
+                    initialUrl: 'about:blank',
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _controller = webViewController;
+                    },
+                  ),
+                ),
+              ),
+            );
+          } else
+            return Scaffold(
+              appBar: AppBar(title: Text(widget.article.title)),
+              body: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      content,
+                      textScaleFactor: 1.2,
+                    ),
+                  )
+                ],
+              ),
+            );
+        },
+        future: _fetchArticle());
   }
 
-  void _fetchArticle() async {
+  Future<String> _fetchArticle() async {
     print("[webView/_fetchArticle] fetching ${widget.article.url}");
     var response = await http.get(widget.article.url);
     print("[webView/_fetchArticle] fetched ${response.statusCode}");
@@ -86,5 +105,6 @@ class _ArticlePageState extends State<ArticlePage> {
     } else {
       throw Exception();
     }
+    return content;
   }
 }
