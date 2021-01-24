@@ -1,12 +1,13 @@
 import 'dart:math' show max;
-import 'dart:convert' as convert;
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:html/parser.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:http/http.dart' as http;
+import 'package:webview_flutter/webview_flutter.dart';
 
 const articles = [
   {
@@ -53,16 +54,24 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
+  _ArticlePageState() : super() {
+    _fetchArticle();
+  }
+
   WebViewController _controller;
+  dom.Document document;
   double contentHeight = 0;
   bool loaded = false;
-  String htmlContent = "";
 
   @override
   Widget build(BuildContext context) {
-    print("Hello World@@!");
-    print('[webView/build] url: ${widget.url}');
-    check();
+    print('[webView/build] url: ${widget.url} ${this.loaded}');
+
+    if (!this.loaded) {
+      _fetchArticle();
+    } else {
+      _loadHtmlFromAssets();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +86,14 @@ class _ArticlePageState extends State<ArticlePage> {
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-              _buildWebView(context),
+              Text("HELLO WORLD World"),
+              Text("HELLO WORLD World"),
+              WebView(
+                initialUrl: 'about:blank',
+                onWebViewCreated: (WebViewController webViewController) {
+                  this._controller = webViewController;
+                },
+              ),
             ],
           ),
         ),
@@ -85,49 +101,26 @@ class _ArticlePageState extends State<ArticlePage> {
     );
   }
 
-  Widget _buildWebView(BuildContext context) {
-    return WebView(
-      initialUrl: widget.url,
-      javascriptMode: JavascriptMode.unrestricted,
-      javascriptChannels: Set.from([
-        JavascriptChannel(
-          name: 'JustFire',
-          onMessageReceived: (JavascriptMessage message) {
-            print('[webView/javascriptChannels] ${message.message}');
-            setState(() {
-              contentHeight = double.parse(message.message);
-            });
-          },
-        )
-      ]),
-      onPageFinished: (String url) {
-        print('[webView/onPageFinished] finished loading "$url"');
-        /*
-        if (url.contains('/finalresponse.html')) {
-          _controller.evaluateJavascript(
-              "(function(){JustFire.postMessage(window.document.body.outerHTML)})();");
-        }*/
-      },
-      onWebViewCreated: (WebViewController ctrl) {
-        print('[webView/onWebViewCreated] created');
-      },
-      onPageStarted: (String url) {
-        print('Page started loading: $url');
-      },
-    );
+  void _fetchArticle() async {
+    print("Fetching article ${widget.url}");
+    var response = await http.get(widget.url);
+    if (response.statusCode == 200) {
+      setState(() {
+        document = parse(response.body);
+        loaded = true;
+      });
+      print("loaded!");
+    } else {
+      print("not loaded!");
+      throw Exception();
+    }
   }
 
-  void check() async {
-    var url = 'https://www.googleapis.com/books/v1/volumes?q={http}';
-    // Await the http get response, then decode the json-formatted response.
-    print("trying to get ${url}");
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = convert.jsonDecode(response.body);
-      var itemCount = jsonResponse['totalItems'];
-      print('Number of books about http: $itemCount.');
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
+  void _loadHtmlFromAssets() async {
+    var text = this.document.getElementsByTagName('p')[0].text;
+    print("_loadHtmlFromAssets ${text}");
+    _controller.loadUrl(Uri.dataFromString(text,
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString());
   }
 }
