@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:just_fire_qwer_hacks/listInSearch.dart';
 import 'package:just_fire_qwer_hacks/pickLang.dart';
+import 'package:just_fire_qwer_hacks/pickPref.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,12 +14,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(title: 'Flutter Demo Home Page'),
       routes: {
         "/lang": (context) => PickLangPage(),
+        "/pref": (context) => PickPrefPage(),
       },
     );
   }
@@ -45,34 +48,37 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, "/lang");
+          },
+          child: Icon(
+            Icons.language,
+          ),
+        ),
         actions: [
           IconButton(
-              icon: Icon(Icons.language),
+              icon: Icon(Icons.favorite),
               onPressed: () {
-                Navigator.pushNamed(context, "/lang");
-              }),
+                Navigator.pushNamed(context, "/pref");
+              })
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: ListView(children: buildList()),
       ),
     );
   }
+}
+
+_searchBar() {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: TextField(
+      decoration: InputDecoration(hintText: 'Search...'),
+      onChanged: (text) {
+        text = text.toLowerCase();
+      },
+    ),
+  );
 }
