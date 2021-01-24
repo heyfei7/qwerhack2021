@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import './article.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ArticlePage(title: articles[0]["title"], url: articles[0]["url"]),
     );
   }
 }
@@ -98,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'You have pushed the BUTTON this many times:',
             ),
             Text(
               '$_counter',
