@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:just_fire_qwer_hacks/localization.dart';
 import 'package:just_fire_qwer_hacks/pickLang.dart';
 
 void main() {
