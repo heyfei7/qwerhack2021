@@ -3,6 +3,8 @@ import 'package:just_fire_qwer_hacks/languageHotSwap.dart';
 import 'package:just_fire_qwer_hacks/localization.dart';
 import 'package:just_fire_qwer_hacks/pickLang.dart';
 
+import './article.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -20,7 +22,11 @@ class MyApp extends StatelessWidget {
       home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
+
         "/hslang": (context) => HotswapLang(),
+
+        "/article": (context) => ArticlePage(articles[0])
+
       },
     );
   }
@@ -79,7 +85,15 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
+          children: <Widget>[
+            LanguageDropdown(),
+            IconButton(
+              icon: Icon(Icons.arrow_forward),
+              onPressed: () {
+                Navigator.pushNamed(context, "/article");
+              },
+            )
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
