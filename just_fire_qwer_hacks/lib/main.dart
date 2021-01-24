@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
       },
@@ -46,13 +46,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
         actions: [
           IconButton(
               icon: Icon(Icons.language),
+              alignment: Alignment.centerLeft,
               onPressed: () {
                 Navigator.pushNamed(context, "/lang");
               }),
+          LanguageDropdown()
         ],
       ),
       body: Center(

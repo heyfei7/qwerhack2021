@@ -1,18 +1,20 @@
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
+import 'package:just_fire_qwer_hacks/langModel.dart';
 
-class _Lang extends StatefulWidget {
+class Lang extends StatefulWidget {
   final Flag flag;
   final String langName;
+  final String langAbbrev;
   bool selected = false;
 
-  _Lang({this.flag, this.langName});
+  Lang({this.flag, this.langName, this.langAbbrev});
 
   @override
   _LangState createState() => _LangState();
 }
 
-class _LangState extends State<_Lang> {
+class _LangState extends State<Lang> {
   Widget build(BuildContext context) {
     return Column(children: [
       Row(
@@ -49,42 +51,52 @@ class _LangState extends State<_Lang> {
 
 class PickLangPage extends StatelessWidget {
   //Will change as more languages get added
-  final List<_Lang> langs = [
-    _Lang(
-        flag: Flag(
-          "gb",
-          height: 80,
-          width: 110,
-        ),
-        langName: "English"),
-    _Lang(
-        flag: Flag(
-          "cn",
-          height: 80,
-          width: 110,
-        ),
-        langName: "Mandarin"),
-    _Lang(
-        flag: Flag(
-          "in",
-          height: 80,
-          width: 110,
-        ),
-        langName: "Hindi"),
-    _Lang(
-        flag: Flag(
-          "es",
-          height: 80,
-          width: 110,
-        ),
-        langName: "Spanish"),
-    _Lang(
-        flag: Flag(
-          "fr",
-          height: 80,
-          width: 110,
-        ),
-        langName: "French"),
+  final List<Lang> langs = [
+    Lang(
+      flag: Flag(
+        "gb",
+        height: 80,
+        width: 110,
+      ),
+      langName: "English",
+      langAbbrev: "en",
+    ),
+    Lang(
+      flag: Flag(
+        "cn",
+        height: 80,
+        width: 110,
+      ),
+      langName: "Mandarin",
+      langAbbrev: "zh",
+    ),
+    Lang(
+      flag: Flag(
+        "in",
+        height: 80,
+        width: 110,
+      ),
+      langName: "Hindi",
+      langAbbrev: "hi",
+    ),
+    Lang(
+      flag: Flag(
+        "es",
+        height: 80,
+        width: 110,
+      ),
+      langName: "Spanish",
+      langAbbrev: "es",
+    ),
+    Lang(
+      flag: Flag(
+        "fr",
+        height: 80,
+        width: 110,
+      ),
+      langName: "French",
+      langAbbrev: "fr",
+    ),
   ];
 
   @override
@@ -100,6 +112,16 @@ class PickLangPage extends StatelessWidget {
         crossAxisSpacing: 0.0,
         crossAxisCount: 1,
         children: langs,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          Map<String, String> langList = {};
+
+          langs.forEach((element) {
+            langList[element.langAbbrev] = element.selected.toString();
+          });
+          await LangModel.insertLangList(langList);
+        },
       ),
     );
   }
