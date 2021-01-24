@@ -36,7 +36,10 @@ class _LanguageDropdownState extends State<LanguageDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton();
+    return IconButton(
+      icon: Icon(Icons.android),
+      onPressed: () {},
+    );
   }
 
   Future<void> buildItems() async {

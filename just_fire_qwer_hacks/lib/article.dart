@@ -32,7 +32,7 @@ var articles = [
 ];
 
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.article}) : super(key: key);
+  ArticlePage(this.article, {Key key}) : super(key: key);
 
   final Article article;
 
@@ -42,16 +42,14 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   WebViewController _controller;
-  bool loaded = false;
   String content = "";
 
   @override
   Widget build(BuildContext context) {
-    print('[webView/build] url: ${widget.article.url}');
-    if (!loaded) {
+    print('[webView/build] ${widget.article.url}');
+    if (content == null) {
       _fetchArticle();
-    } else {
-      print("content ${content}");
+    } else if (_controller != null) {
       _controller.loadUrl(Uri.dataFromString(content,
               mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
           .toString());
@@ -77,16 +75,13 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   void _fetchArticle() async {
-    print("Fetching article ${widget.article.url}");
+    print("[webView/_fetchArticle] fetching ${widget.article.url}");
     var response = await http.get(widget.article.url);
+    print("[webView/_fetchArticle] fetched ${response.statusCode}");
     if (response.statusCode == 200) {
       var document = parse(response.body);
       setState(() {
-        loaded = true;
         content = widget.article.getContent(document);
-        if (content == null) {
-          content = "";
-        }
       });
     } else {
       throw Exception();

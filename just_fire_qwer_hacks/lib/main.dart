@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
+        "/article": (context) => ArticlePage(articles[0])
       },
     );
   }
@@ -62,6 +63,12 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             LanguageDropdown(),
+            IconButton(
+              icon: Icon(Icons.arrow_forward),
+              onPressed: () {
+                Navigator.pushNamed(context, "/article");
+              },
+            )
           ],
         ),
       ),
