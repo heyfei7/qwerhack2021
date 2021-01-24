@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:webview_flutter/webview_flutter.dart';
 
 class Article {
   Article({this.title, this.url, this.getContent});
@@ -25,7 +27,7 @@ var articles = [
           "https://www.hopkinsmedicine.org/health/wellness-and-prevention/tips-for-parents-of-lgbtq-youth",
       getContent: (document) {
         var rtf = document.getElementsByClassName('rtf');
-        return rtf[0].innerHTML;
+        return rtf[0].text;
       }),
 ];
 
@@ -39,18 +41,16 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
+  WebViewController _controller;
   bool loaded = false;
   String content = "";
 
   @override
   Widget build(BuildContext context) {
-    print('[webView/build] url: ${widget.article.url} ${this.loaded}');
-
-    /*
-    if (!this.loaded) {
+    print('[webView/build] url: ${widget.article.url} ${loaded}');
+    if (!loaded) {
       _fetchArticle();
-    }*/
-    _fetchArticle();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -60,16 +60,11 @@ class _ArticlePageState extends State<ArticlePage> {
       ),
       body: Center(
         child: Container(
-          child: Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Text(
-                content,
-                //maxLines: 10,
-                //overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.grey[800], fontSize: 20),
-              ),
-            ),
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller = webViewController;
+            },
           ),
         ),
       ),
@@ -83,11 +78,14 @@ class _ArticlePageState extends State<ArticlePage> {
       var document = parse(response.body);
       setState(() {
         loaded = true;
-        content = widget.article.getContent(document);
-        if (this.content == null) {
+        String content = widget.article.getContent(document);
+        if (content == null) {
           content = "";
         }
       });
+      _controller.loadUrl(Uri.dataFromString(content,
+              mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+          .toString());
     } else {
       throw Exception();
     }
