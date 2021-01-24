@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ArticlePage(title: articles[0]["title"], url: articles[0]["url"]),
+      home: ArticlePage(article: articles[0]),
     );
   }
 }

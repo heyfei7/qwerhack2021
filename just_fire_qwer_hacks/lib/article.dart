@@ -1,96 +1,75 @@
-import 'dart:math' show max;
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:html/parser.dart';
-import 'package:html/dom.dart' as dom;
 import 'package:http/http.dart' as http;
-import 'package:webview_flutter/webview_flutter.dart';
 
-const articles = [
-  {
-    "title": "BOOP",
-    "url":
-        "https://bi.org/en/articles/what-my-parents-think-about-my-bisexuality",
-  },
-  {
-    "title": "[GUEST POST] WHEN YOUR CHILD COMES OUT AS BISEXUAL",
-    "url":
-        "https://shameproofparenting.com/guest-post-when-your-child-comes-out-as-bisexual/"
-  }
-];
-
-class ArticleListPage extends StatefulWidget {
-  ArticleListPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _ArticleListPageState createState() => _ArticleListPageState();
-}
-
-class _ArticleListPageState extends State<ArticleListPage> {
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-        ),
-        body: Center(child: Container()));
-  }
-}
-
-class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.title, this.url}) : super(key: key);
-
+class Article {
+  Article({this.title, this.url, this.getContent});
   final String title;
   final String url;
+  final Function getContent;
+}
+
+var articles = [
+  Article(
+      title: "What my parents think about my bisexuality...",
+      url:
+          "https://bi.org/en/articles/what-my-parents-think-about-my-bisexuality",
+      getContent: (document) {
+        return document.getElementById("article").text;
+      }),
+  Article(
+      title: "Tips for Parents of LGBTQ Youth",
+      url:
+          "https://www.hopkinsmedicine.org/health/wellness-and-prevention/tips-for-parents-of-lgbtq-youth",
+      getContent: (document) {
+        var rtf = document.getElementsByClassName('rtf');
+        return rtf[0].innerHTML;
+      }),
+];
+
+class ArticlePage extends StatefulWidget {
+  ArticlePage({Key key, this.article}) : super(key: key);
+
+  final Article article;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  _ArticlePageState() : super() {
-    _fetchArticle();
-  }
-
-  WebViewController _controller;
-  dom.Document document;
-  double contentHeight = 0;
   bool loaded = false;
+  String content = "";
 
   @override
   Widget build(BuildContext context) {
-    print('[webView/build] url: ${widget.url} ${this.loaded}');
+    print('[webView/build] url: ${widget.article.url} ${this.loaded}');
 
+    /*
     if (!this.loaded) {
       _fetchArticle();
-    } else {
-      _loadHtmlFromAssets();
-    }
+    }*/
+    _fetchArticle();
 
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.article.title),
       ),
       body: Center(
         child: Container(
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              WebView(
-                initialUrl: 'about:blank',
-                onWebViewCreated: (WebViewController webViewController) {
-                  this._controller = webViewController;
-                },
+          child: Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Text(
+                content,
+                //maxLines: 10,
+                //overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.grey[800], fontSize: 20),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -98,22 +77,19 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   void _fetchArticle() async {
-    print("Fetching article ${widget.url}");
-    var response = await http.get(widget.url);
+    print("Fetching article ${widget.article.url}");
+    var response = await http.get(widget.article.url);
     if (response.statusCode == 200) {
+      var document = parse(response.body);
       setState(() {
-        document = parse(response.body);
         loaded = true;
+        content = widget.article.getContent(document);
+        if (this.content == null) {
+          content = "";
+        }
       });
     } else {
       throw Exception();
     }
-  }
-
-  void _loadHtmlFromAssets() async {
-    var text = this.document.getElementById("article").text;
-    _controller.loadUrl(Uri.dataFromString(text,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString());
   }
 }
