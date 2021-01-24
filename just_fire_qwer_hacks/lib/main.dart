@@ -27,12 +27,9 @@ class MyApp extends StatelessWidget {
       home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
-
         "/hslang": (context) => HotswapLang(),
-        "/article": (context) => ArticlePage(articles[0])
-
+        "/article": (context) => ArticlePage(articles[0]),
         "/pref": (context) => PickPrefPage(),
-
       },
       debugShowCheckedModeBanner: false,
     );
@@ -88,7 +85,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         actions: [
           IconButton(
               icon: Icon(Icons.language),
@@ -120,27 +116,23 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.pushNamed(context, "/pref");
               })
-
         ],
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-
             IconButton(
               icon: Icon(Icons.arrow_forward),
               onPressed: () {
                 Navigator.pushNamed(context, "/article");
               },
             ),
-
             TextField(
               controller: _searchController,
               decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
               //decoration: InputDecoration(hintText: 'Search...'),
             ),
             Container(height: 600.0, child: ListView(children: buildList())),
-
           ],
         ),
       ),
