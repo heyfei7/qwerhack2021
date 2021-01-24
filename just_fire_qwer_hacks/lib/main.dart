@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:just_fire_qwer_hacks/languageHotSwap.dart';
 import 'package:just_fire_qwer_hacks/localization.dart';
+
+import 'package:just_fire_qwer_hacks/listInSearch.dart';
+
 import 'package:just_fire_qwer_hacks/pickLang.dart';
+import 'package:just_fire_qwer_hacks/pickPref.dart';
 
 import './article.dart';
 
@@ -16,14 +21,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(title: ''),
       routes: {
         "/lang": (context) => PickLangPage(),
+
         "/hslang": (context) => HotswapLang(),
         "/article": (context) => ArticlePage(articles[0])
+
+        "/pref": (context) => PickPrefPage(),
+
       },
       debugShowCheckedModeBanner: false,
     );
@@ -40,6 +49,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController _searchController = TextEditingController();
+
+  List<Widget> _resultsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  _onSearchChanged() {
+    print(_searchController.text);
+  }
+
+  searchResultsList() {
+    setState(() {
+      _resultsList = buildList();
+    });
+  }
+
   int _counter = 0;
 
   void _incrementCounter() {
@@ -52,6 +88,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         actions: [
           IconButton(
               icon: Icon(Icons.language),
@@ -78,26 +115,47 @@ class _HomePageState extends State<HomePage> {
                     });
               }),
           HotswapLangButton(),
+          IconButton(
+              icon: Icon(Icons.favorite),
+              onPressed: () {
+                Navigator.pushNamed(context, "/pref");
+              })
+
         ],
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+
             IconButton(
               icon: Icon(Icons.arrow_forward),
               onPressed: () {
                 Navigator.pushNamed(context, "/article");
               },
-            )
+            ),
+
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+              //decoration: InputDecoration(hintText: 'Search...'),
+            ),
+            Container(height: 600.0, child: ListView(children: buildList())),
+
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
   }
+}
+
+_searchBar() {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: TextField(
+      decoration: InputDecoration(hintText: 'Search...'),
+      onChanged: (text) {
+        text = text.toLowerCase();
+      },
+    ),
+  );
 }
