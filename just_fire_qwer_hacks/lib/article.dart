@@ -47,9 +47,14 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('[webView/build] url: ${widget.article.url} ${loaded}');
+    print('[webView/build] url: ${widget.article.url}');
     if (!loaded) {
       _fetchArticle();
+    } else {
+      print("content ${content}");
+      _controller.loadUrl(Uri.dataFromString(content,
+              mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+          .toString());
     }
 
     return Scaffold(
@@ -78,14 +83,11 @@ class _ArticlePageState extends State<ArticlePage> {
       var document = parse(response.body);
       setState(() {
         loaded = true;
-        String content = widget.article.getContent(document);
+        content = widget.article.getContent(document);
         if (content == null) {
           content = "";
         }
       });
-      _controller.loadUrl(Uri.dataFromString(content,
-              mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-          .toString());
     } else {
       throw Exception();
     }
